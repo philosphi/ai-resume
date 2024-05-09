@@ -242,69 +242,7 @@ export default function FileUploadForm() {
   return (
     <SchemaContext.Provider value={memoizedSchemaContext}>
       <form onSubmit={handleSubmit} className="flex flex-wrap items-start">
-        <div className="w-full p-1 lg:w-3/5">
-          <div className="p-6 bg-white rounded-lg shadow-md">
-            <h2 className="mb-4 text-lg font-semibold">Define Your Data</h2>
-            <div>
-              <label
-                htmlFor="schemaOptions"
-                className={styles.formControlLabel}
-              >
-                Select a predefined schema from the dropdown or build your own.
-              </label>
-
-              <select
-                value={schemaExampleSelect}
-                onChange={handleSchemaExampleChange}
-                name="schemaOptions"
-                id="schemaOptions"
-                className={clsx(styles.formControl, 'mb-5 !w-1/2')}
-              >
-                <option value="custom">Custom</option>
-                <option value="invoiceExample">Invoice Example</option>
-                <option value="menuExample">Menu Example</option>
-                <option value="menuExampleWithItems">
-                  Menu Example &#40;with items&#41;
-                </option>
-                <option value="realEstateExample">Real Estate Example</option>
-              </select>
-            </div>
-            <div className="text-left">
-              {schemaProperties.map((property, index) => (
-                <div className="relative" key={index}>
-                  <SchemaPropertyInput
-                    index={index}
-                    property={property}
-                    className="p-3 pb-4 mb-2 bg-gray-100 rounded-lg"
-                  />
-                  {schemaProperties.length > 1 && (
-                    <button
-                      type="button"
-                      onClick={() =>
-                        memoizedSchemaContext.handleRemoveSchemaProperty(index)
-                      }
-                      className="absolute top-0 right-0 p-1 text-red-500 hover:text-red-700"
-                    >
-                      <AiOutlineClose size={24} />
-                    </button>
-                  )}
-                </div>
-              ))}
-              {schemaProperties.length < 10 && (
-                <button
-                  type="button"
-                  className="flex items-center px-4 py-2 mt-2 font-bold text-white bg-green-500 rounded hover:bg-green-700 focus:ring-2 focus:ring-green-400"
-                  onClick={() =>
-                    memoizedSchemaContext.handleAddSchemaProperty()
-                  }
-                >
-                  <AiOutlinePlus size={24} className="mx-2" /> Add Field
-                </button>
-              )}
-            </div>
-          </div>
-        </div>
-        <div className="w-full p-1 lg:w-2/5">
+        <div className="w-full p-1">
           <div className="p-6 mb-4 bg-white rounded-lg shadow-md lg:mb-0">
             <h2 className="mb-4 text-lg font-semibold">Upload Your PDF</h2>
             <DropZone
@@ -353,7 +291,6 @@ export default function FileUploadForm() {
             </DropZone>
           </div>
           <div className="p-6 mt-2 bg-white rounded-lg shadow-md">
-            <h2 className="mb-4 text-lg font-semibold">Generate Data</h2>
             <div className="mt-auto">
               <button
                 type="submit"

@@ -1,22 +1,23 @@
 import { Buffer } from 'buffer';
-import { sample_schema } from './data_schema';
 import { extractText } from './pdf';
 import { openai } from './api';
-import { buildPromptArray, createChatCompletion } from './prompts';
-import { generateJsonObject } from './generateObject';
-import { Schema } from '@Types/schemaTypes';
+import { buildPrompt, createChatCompletion } from './prompts';
+import { PromptObject } from './buildSchemaPrompt';
 
 export const aiPdfHandler = async (
   fileBuffer: Buffer,
-  schema: Schema,
 ): Promise<any> => {
   try {
     // Extract the text from the PDF
     const documentText = await extractText(fileBuffer);
 
-    const schemaToUse = schema || sample_schema;
+    const prompt: PromptObject = {
+      id: 1,
+      prompt: buildPrompt(documentText),
+    };
 
-    const prompts = buildPromptArray(documentText, schemaToUse);
+    const prompts: PromptObject[] = []
+    prompts.push(prompt);
 
     const aiResponsesPromises = prompts
       .map(subPrompt => {
@@ -29,7 +30,7 @@ export const aiPdfHandler = async (
     const completedPromptObjects = await Promise.all(aiResponsesPromises);
     const resultObjectArr = completedPromptObjects.map(completedPromptObj => {
       if (completedPromptObj?.output) {
-        return generateJsonObject(completedPromptObj);
+        return completedPromptObj.output;
       }
     });
     return zipObjects(resultObjectArr);

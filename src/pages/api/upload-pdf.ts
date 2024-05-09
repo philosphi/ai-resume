@@ -29,9 +29,7 @@ handler.post(async (req, res) => {
     }
 
     // Get the schema from the formData
-    const schema: Schema = JSON.parse(req.body.schema);
-
-    const aiResponse = await aiPdfHandler(req.file.buffer, schema);
+    const aiResponse = await aiPdfHandler(req.file.buffer) 
 
     res.status(200).json({ fileName: req.file.originalname, data: aiResponse });
   } catch (error: any) {

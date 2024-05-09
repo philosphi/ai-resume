@@ -2,8 +2,8 @@ import { Schema, SchemaProperty } from '../types/schemaTypes';
 
 export type PromptObject = {
   id: number;
-  summary: string;
-  schema: Schema;
+  summary?: string;
+  schema?: Schema;
   prompt?: string;
   output?: any[];
 };

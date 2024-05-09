@@ -10,26 +10,133 @@ export const buildPromptArray = (
 
   // loop over each prompt object
   promptObjects.forEach(subPrompt => {
-    const { summary } = subPrompt;
-
-    subPrompt.prompt = buildPrompt(documentText, summary);
+    subPrompt.prompt = buildPrompt(documentText);
   });
 
   return promptObjects;
 };
 
-const buildPrompt = (documentText: string, summary: string): string => {
+export const buildPrompt = (documentText: string): string => {
   let prompt = `I have the following document text :\n\n`;
 
   prompt += documentText;
 
   prompt +=
-    '\n\nCreate a valid Javascript array with data about this text in the format below.\n\n';
+    '\n\nGiven the following resume text, extract the individuals professional details and format them into a structured JSON object using the schema below. Ensure that all bullet points under each work section are included in the highlights in verbatim.\n\n';
 
-  prompt += summary;
+  prompt += `{
+    "basics": {
+      "name": "John Doe",
+      "label": "Programmer",
+      "image": "",
+      "email": "john@gmail.com",
+      "phone": "(912) 555-4321",
+      "url": "https://johndoe.com",
+      "summary": "A summary of John Doe…",
+      "location": {
+        "address": "2712 Broadway St",
+        "postalCode": "CA 94115",
+        "city": "San Francisco",
+        "countryCode": "US",
+        "region": "California"
+      },
+      "profiles": [{
+        "network": "Twitter",
+        "username": "john",
+        "url": "https://twitter.com/john"
+      }]
+    },
+    "work": [{
+      "name": "Company",
+      "position": "President",
+      "url": "https://company.com",
+      "startDate": "2013-01-01",
+      "endDate": "2014-01-01",
+      "summary": "Description…",
+      "highlights": [
+        "Started the company"
+      ]
+    }],
+    "volunteer": [{
+      "organization": "Organization",
+      "position": "Volunteer",
+      "url": "https://organization.com/",
+      "startDate": "2012-01-01",
+      "endDate": "2013-01-01",
+      "summary": "Description…",
+      "highlights": [
+        "Awarded 'Volunteer of the Month'"
+      ]
+    }],
+    "education": [{
+      "institution": "University",
+      "url": "https://institution.com/",
+      "area": "Software Development",
+      "studyType": "Bachelor",
+      "startDate": "2011-01-01",
+      "endDate": "2013-01-01",
+      "score": "4.0",
+      "courses": [
+        "DB1101 - Basic SQL"
+      ]
+    }],
+    "awards": [{
+      "title": "Award",
+      "date": "2014-11-01",
+      "awarder": "Company",
+      "summary": "There is no spoon."
+    }],
+    "certificates": [{
+      "name": "Certificate",
+      "date": "2021-11-07",
+      "issuer": "Company",
+      "url": "https://certificate.com"
+    }],
+    "publications": [{
+      "name": "Publication",
+      "publisher": "Company",
+      "releaseDate": "2014-10-01",
+      "url": "https://publication.com",
+      "summary": "Description…"
+    }],
+    "skills": [{
+      "name": "Web Development",
+      "level": "Master",
+      "keywords": [
+        "HTML",
+        "CSS",
+        "JavaScript"
+      ]
+    }],
+    "languages": [{
+      "language": "English",
+      "fluency": "Native speaker"
+    }],
+    "interests": [{
+      "name": "Wildlife",
+      "keywords": [
+        "Ferrets",
+        "Unicorns"
+      ]
+    }],
+    "references": [{
+      "name": "Jane Doe",
+      "reference": "Reference…"
+    }],
+    "projects": [{
+      "name": "Project",
+      "startDate": "2019-01-01",
+      "endDate": "2021-01-01",
+      "description": "Description...",
+      "highlights": [
+        "Won award at AIHacks 2016"
+      ],
+      "url": "https://project.com/"
+    }]
+  }`;
 
   prompt +=
-    '\n\nIf a data field is unknown, use a null value. Respond with only with the data value as a Javascript array in the exact format of the example.\n\n###';
+    '\n\nIf a data field is unknown, use a null value.\n\n###';
 
   return prompt;
 };
@@ -91,6 +198,9 @@ function convertTextToValidArray(jsonString: string): any[] {
       jsonString += ']';
     }
   }
+
+  //remove json markdown
+  jsonString = jsonString.replace(/^```json|```$/g, '').trim();
 
   try {
     // Remove leading/trailing white spaces and newline characters
